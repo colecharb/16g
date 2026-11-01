@@ -56,8 +56,8 @@ class VariableText extends HTMLElement {
 }
 
 // Letters near the pointer move away from it and lose weight: a mouse
-// anywhere, or a finger while it's pressed down. A press that turns into a
-// scroll lets go, so the page still scrolls normally.
+// anywhere, or a finger while it's on the screen, including while it scrolls
+// the page. Listeners are passive, so scrolling is never held up.
 const RADIUS = 130; // px from a letter's centre where the pointer starts to push
 const PUSH = 0.45; // furthest a letter moves, in ems of its own font size
 const THIN = 600; // most weight a letter loses
@@ -87,15 +87,30 @@ class Repel {
 
     listen() {
         const options = { passive: true };
-        addEventListener("pointerdown", (e) => this.point(e), options);
-        // Touch pointers only move while pressed.
-        addEventListener("pointermove", (e) => this.point(e), options);
-        const lift = (e) => {
-            if (e.pointerType !== "mouse") this.release();
+
+        // Mouse and pen.
+        const point = (e) => {
+            if (e.pointerType !== "touch") this.point(e);
         };
-        addEventListener("pointerup", lift, options);
-        addEventListener("pointercancel", lift, options);
-        document.documentElement.addEventListener("pointerleave", () => this.release());
+        addEventListener("pointerdown", point, options);
+        addEventListener("pointermove", point, options);
+        addEventListener("pointerup", (e) => e.pointerType === "pen" && this.release(), options);
+        addEventListener("pointercancel", (e) => e.pointerType === "pen" && this.release(), options);
+        document.documentElement.addEventListener(
+            "pointerleave",
+            (e) => e.pointerType !== "touch" && this.release(),
+        );
+
+        // Fingers. The browser cancels pointer events once a press turns
+        // into a scroll, but touch events keep coming while the finger moves.
+        const touch = (e) => {
+            if (e.touches.length) this.point(e.touches[0]);
+            else this.release();
+        };
+        addEventListener("touchstart", touch, options);
+        addEventListener("touchmove", touch, options);
+        addEventListener("touchend", touch, options);
+        addEventListener("touchcancel", touch, options);
         addEventListener("scroll", () => this.schedule(), options);
         // Letter positions only change with the layout.
         new ResizeObserver(() => this.measure()).observe(document.documentElement);
