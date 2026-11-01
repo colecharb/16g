@@ -22,10 +22,11 @@
     </head>
     <body class="bg-paper text-ink antialiased">
         <div class="mx-auto w-full max-w-5xl px-5 sm:px-8">
-            <!-- svh is the viewport with the browser toolbars showing, so the
-                 hero stays put as mobile toolbars collapse on scroll. -->
+            <!-- lvh is the viewport with the browser toolbars hidden. It
+                 doesn't change as they collapse on scroll, and it covers the
+                 page behind Safari's see-through toolbar. -->
             <header
-                class="@container flex min-h-svh max-w-[28rem] flex-col justify-center py-14"
+                class="@container flex min-h-lvh max-w-[28rem] flex-col justify-center py-14"
             >
                 <div
                     class="font-bold tracking-tight leading-none mb-6"
