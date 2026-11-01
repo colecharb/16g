@@ -40,25 +40,36 @@
             <!-- lvh is the viewport with the browser toolbars hidden. It
                  doesn't change as they collapse on scroll, and it covers the
                  page behind Safari's see-through toolbar. -->
+            <!-- --mark-size is as big as the window allows "16g" to be: at
+                 most the page's width (54.5cqw sets it edge to edge, 1.821em
+                 wide in Mono with tight tracking), and short enough to leave
+                 26rem of the screen for the rest of the hero. -->
             <header
                 class="flex min-h-lvh flex-col justify-center py-14"
+                style="--mark-size: min(54.5cqw, max(6rem, 100svh - 26rem))"
             >
-                <!-- As big as the window allows: at most the page's width
-                     (54.5cqw sets "16g" in Mono edge to edge), and short
-                     enough to leave 26rem of the screen for the rest of the
-                     hero. -->
                 <div
                     class="font-mono font-bold tracking-tight leading-none mb-6"
-                    style="font-size: min(54.5cqw, max(6rem, 100svh - 26rem))"
+                    style="font-size: var(--mark-size)"
                 >
                     <variable-text animation="pulse">16g</variable-text>
                 </div>
-                <!-- 8.3cqw sets the name, 12em wide in Mono small caps, edge
-                     to edge across the h1. -->
-                <h1 class="@container mb-6 max-w-[28rem] font-mono">
+                <!-- The name keeps its size from the 28rem column (it's 12em
+                     wide in Mono small caps), shrinking only to fit when
+                     "16g" is narrower, and is letter-spaced out to the width
+                     of "16g". The last letter's spacing hangs past the edge,
+                     so 24 gaps share the extra width. -->
+                <h1 class="mb-6 font-mono">
                     <span
                         class="block whitespace-nowrap font-semibold leading-none"
-                        style="font-size: 8.3cqw; font-variant-caps: small-caps"
+                        style="
+                            --name-size: min(2.324rem, 8.3cqw, var(--mark-size) * 1.821 / 12.008);
+                            font-size: var(--name-size);
+                            font-variant-caps: small-caps;
+                            letter-spacing: calc(
+                                (var(--mark-size) * 1.821 - var(--name-size) * 12.008) / 24
+                            );
+                        "
                     >
                         <variable-text repel>Sixteen Grams Corporation</variable-text>
                     </span>
