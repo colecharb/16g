@@ -22,7 +22,11 @@
     </head>
     <body class="bg-paper text-ink antialiased">
         <div class="mx-auto w-full max-w-5xl px-5 sm:px-8">
-            <header class="@container max-w-[28rem] pt-14 pb-16 sm:pt-24 sm:pb-20">
+            <!-- svh is the viewport with the browser toolbars showing, so the
+                 hero stays put as mobile toolbars collapse on scroll. -->
+            <header
+                class="@container flex min-h-svh max-w-[28rem] flex-col justify-center py-14"
+            >
                 <div
                     class="font-bold tracking-tight leading-none mb-6"
                     style="font-size: 60cqw"
