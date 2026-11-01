@@ -75,7 +75,7 @@ variable-text {
 /* pulse: each letter breathes --pulse-range above and below its weight, out
    of step with the others. */
 variable-text[animation="pulse"] {
-    --pulse-range: 100;
+    --pulse-range: 200;
     --pulse-duration: 2.4s;
 }
 variable-text[animation="pulse"] .vt-letter {
