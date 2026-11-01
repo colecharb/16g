@@ -87,8 +87,7 @@ variable-text[repel] .vt-letter {
    raised to --pulse-size-exponent. Below 1, big text slows down less than in
    proportion (0.5 is the square root). Each letter then runs up to
    --pulse-jitter faster or slower, so they drift in and out of step. */
-variable-text[animation="pulse"],
-.stroke-pulse {
+variable-text[animation="pulse"] {
     --pulse-range: 200;
     --pulse-base-duration: 1.5s;
     --pulse-base-size: 72;
@@ -124,25 +123,9 @@ variable-text[animation="pulse"] .vt-letter {
         font-weight: calc(var(--centre) + var(--pulse-range));
     }
 }
-/* The same pulse for SVG line art: the stroke width swings over about the
-   stem widths of the lettering at weights 400 to 800. Set --font-size to the
-   drawing's size in px so it keeps time with text that size. */
-.stroke-pulse {
-    animation: stroke-pulse var(--pulse-duration) ease-in-out infinite
-        alternate;
-}
-@keyframes stroke-pulse {
-    from {
-        stroke-width: 1.5;
-    }
-    to {
-        stroke-width: 3.5;
-    }
-}
 
 @media (prefers-reduced-motion: reduce) {
-    .vt-letter,
-    .stroke-pulse {
+    .vt-letter {
         animation: none !important;
     }
 }
