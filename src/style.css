@@ -1,1 +1,84 @@
 @import "tailwindcss";
+
+/* Colour tokens. Utilities (bg-paper, text-ink, border-line, …) read the
+   variables, so dark mode only has to redefine them once below. */
+@theme inline {
+    --color-paper: var(--paper);
+    --color-ink: var(--ink);
+    --color-muted: var(--muted);
+    --color-line: var(--line);
+    --color-tile: var(--tile);
+}
+
+:root {
+    --paper: #fafaf7;
+    --ink: #1a1a1a;
+    --muted: #5f5f5a;
+    --line: rgb(26 26 26 / 0.12);
+    --tile: #ffffff;
+    color-scheme: light dark;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --paper: #121211;
+        --ink: #ecece8;
+        --muted: #a3a39c;
+        --line: rgb(236 236 232 / 0.14);
+        --tile: #000000;
+    }
+}
+
+/* Small caps for section labels, echoing the masthead. */
+.label {
+    font-variant-caps: small-caps;
+    letter-spacing: 0.08em;
+    font-weight: 600;
+}
+
+/* Outbound project links. The accent comes from each project's --accent. */
+.project-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4em;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 0.45rem 0.95rem;
+    font-weight: 500;
+    line-height: 1.25;
+    transition:
+        border-color 150ms,
+        background-color 150ms;
+}
+.project-link:hover {
+    border-color: var(--accent, var(--ink));
+}
+.project-link:focus-visible {
+    outline: 2px solid var(--accent, var(--ink));
+    outline-offset: 2px;
+}
+.project-link--primary {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: var(--paper);
+}
+.project-link--primary:hover {
+    border-color: var(--ink);
+    background: color-mix(in srgb, var(--ink) 85%, var(--paper));
+}
+
+/* The coloured dot that carries each project's brand colour. */
+.accent-dot {
+    display: inline-block;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 999px;
+    background: var(--accent);
+    /* Keeps dark brand colours visible on the dark theme. */
+    box-shadow: 0 0 0 1px var(--line);
+}
+
+/* App icon tiles share the iOS icon's corner radius. */
+.app-tile {
+    border-radius: 22.5%;
+}
