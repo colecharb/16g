@@ -63,7 +63,7 @@ const PUSH = 0.45; // furthest a letter moves, in ems of its own font size
 const THIN = 600; // most weight a letter loses
 // Half-lives in ms: how long a letter takes to cover half the remaining way to
 // where it's headed. Letters dodge quickly and drift back slowly.
-const AWAY_MS = 80;
+const AWAY_MS = 50;
 const BACK_MS = 150;
 const WGHT_MIN = 200; // the font's weight range
 const WGHT_MAX = 800;
