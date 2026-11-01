@@ -61,7 +61,9 @@ class VariableText extends HTMLElement {
 const RADIUS = 130; // px from a letter's centre where the pointer starts to push
 const PUSH = 0.45; // furthest a letter moves, in ems of its own font size
 const THIN = 600; // most weight a letter loses
-const TOUCH_STRENGTH = 3; // push and thinning multiplier for a finger
+// A finger pushes harder and from further away than a mouse.
+const TOUCH_STRENGTH = 2; // push and thinning multiplier
+const TOUCH_REACH = 2; // RADIUS multiplier
 // Half-lives in ms: how long a letter takes to cover half the remaining way to
 // where it's headed. Letters dodge quickly and drift back slowly.
 const AWAY_MS = 50;
@@ -74,7 +76,7 @@ const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)");
 class Repel {
     letters = [];
     pointer = null; // viewport coordinates, or null when there's no pointer
-    strength = 1; // TOUCH_STRENGTH for a finger, 1 for a mouse or pen
+    touch = false; // whether the pointer is a finger
     frame = 0;
     last = 0; // time of the last frame, or 0 when the letters are at rest
 
@@ -106,7 +108,7 @@ class Repel {
         // Fingers. The browser cancels pointer events once a press turns
         // into a scroll, but touch events keep coming while the finger moves.
         const touch = (e) => {
-            if (e.touches.length) this.point(e.touches[0], TOUCH_STRENGTH);
+            if (e.touches.length) this.point(e.touches[0], true);
             else this.release();
         };
         addEventListener("touchstart", touch, options);
@@ -119,10 +121,10 @@ class Repel {
         document.fonts.ready.then(() => this.measure());
     }
 
-    point(e, strength = 1) {
+    point(e, touch = false) {
         if (reduceMotion.matches) return;
         this.pointer = { x: e.clientX, y: e.clientY };
-        this.strength = strength;
+        this.touch = touch;
         this.schedule();
     }
 
@@ -162,6 +164,8 @@ class Repel {
         const dt = this.last ? Math.min(now - this.last, 100) : 1000 / 60;
         const away = 1 - 0.5 ** (dt / AWAY_MS);
         const back = 1 - 0.5 ** (dt / BACK_MS);
+        const radius = this.touch ? RADIUS * TOUCH_REACH : RADIUS;
+        const strength = this.touch ? TOUCH_STRENGTH : 1;
         let moving = false;
         for (const l of this.letters) {
             let tx = 0;
@@ -171,8 +175,8 @@ class Repel {
                 const dx = l.cx - (this.pointer.x + scrollX);
                 const dy = l.cy - (this.pointer.y + scrollY);
                 const d = Math.hypot(dx, dy);
-                if (d < RADIUS) {
-                    const f = this.strength * (1 - d / RADIUS) ** 2;
+                if (d < radius) {
+                    const f = strength * (1 - d / radius) ** 2;
                     const step = l.push * f / (d || 1);
                     tx = dx * step;
                     ty = dy * step;
