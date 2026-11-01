@@ -52,7 +52,8 @@
                     class="font-mono font-bold tracking-tight leading-none mb-6"
                     style="font-size: var(--mark-size)"
                 >
-                    <variable-text animation="pulse">16g</variable-text>
+                    <!-- The font's full range: 500 ± 300 is 200 to 800. -->
+                    <variable-text animation="pulse" style="--pulse-range: 300">16g</variable-text>
                 </div>
                 <!-- The name keeps its size from the 28rem column (it's 12em
                      wide in Mono small caps), shrinking only to fit when
@@ -74,10 +75,9 @@
                         <variable-text repel>Sixteen Grams Corporation</variable-text>
                     </span>
                 </h1>
-                <p class="mx-auto max-w-[28rem] text-center leading-relaxed text-pretty">
-                    We design, build and maintain apps and websites from
-                    Ontario: our own, and a few for people whose work we
-                    believe in.
+                <p class="mx-auto text-center leading-relaxed text-pretty">
+                    We design, build and maintain apps and websites:
+                    our own, and a few for people whose work we believe in.
                 </p>
                 <a href="#work" class="mx-auto mt-10 block w-fit" aria-label="See our work">
                     <svg
