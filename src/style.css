@@ -1,5 +1,26 @@
 @import "tailwindcss";
 
+/* Atkinson Hyperlegible, self-hosted as variable fonts: Next for headings
+   and body text, Mono for subheadings and subtitles. */
+@font-face {
+    font-family: "Atkinson Hyperlegible Next";
+    src: url("/fonts/AtkinsonHyperlegibleNext.woff2") format("woff2");
+    font-weight: 200 800;
+    font-display: swap;
+}
+@font-face {
+    font-family: "Atkinson Hyperlegible Mono";
+    src: url("/fonts/AtkinsonHyperlegibleMono.woff2") format("woff2");
+    font-weight: 200 800;
+    font-display: swap;
+}
+
+@theme {
+    --font-sans: "Atkinson Hyperlegible Next", ui-sans-serif, system-ui,
+        sans-serif;
+    --font-mono: "Atkinson Hyperlegible Mono", ui-monospace, monospace;
+}
+
 /* Colour tokens. Utilities (bg-paper, text-ink, border-line, …) read the
    variables, so dark mode only has to redefine them once below. */
 @theme inline {
@@ -38,6 +59,7 @@ body {
 
 /* Small caps for section labels, echoing the masthead. */
 .label {
+    font-family: var(--font-mono);
     font-variant-caps: small-caps;
     letter-spacing: 0.08em;
     font-weight: 600;
