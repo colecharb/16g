@@ -73,10 +73,16 @@ variable-text {
 }
 
 /* pulse: each letter breathes --pulse-range above and below its weight, out
-   of step with the others. */
+   of step with the others. Bigger text pulses slower: a swing takes
+   --pulse-base-duration at --pulse-base-size px, scaled by the font size. */
 variable-text[animation="pulse"] {
     --pulse-range: 200;
-    --pulse-duration: 1.5s;
+    --pulse-base-duration: 1.5s;
+    --pulse-base-size: 72;
+    --pulse-duration: calc(
+        var(--pulse-base-duration) * var(--font-size, 72) /
+            var(--pulse-base-size)
+    );
 }
 variable-text[animation="pulse"] .vt-letter {
     /* Shift the centre in from the font's limits so the full swing shows. */

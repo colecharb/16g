@@ -5,6 +5,7 @@
 // Each letter gets:
 //   --wght  the element's own font weight, the target the animation moves around
 //   --rand  a random number from 0 to 1, for staggering the letters
+// and the element itself gets --font-size, its font size in px (unitless).
 class VariableText extends HTMLElement {
     connectedCallback() {
         if (this.split) return;
@@ -35,6 +36,16 @@ class VariableText extends HTMLElement {
         }
 
         this.replaceChildren(label, letters);
+
+        // Watch the parent: the font size follows the layout, and inline
+        // elements like this one never report resizes themselves.
+        const measure = () =>
+            this.style.setProperty(
+                "--font-size",
+                parseFloat(getComputedStyle(this).fontSize),
+            );
+        measure();
+        if (this.parentElement) new ResizeObserver(measure).observe(this.parentElement);
     }
 }
 
