@@ -65,6 +65,43 @@ body {
     font-weight: 600;
 }
 
+/* <variable-text> letter animations (see variable-text.js). --wght-min and
+   --wght-max are the font's weight range; each animation keeps inside it. */
+variable-text {
+    --wght-min: 200;
+    --wght-max: 800;
+}
+
+/* pulse: each letter breathes --pulse-range above and below its weight, out
+   of step with the others. */
+variable-text[animation="pulse"] {
+    --pulse-range: 100;
+    --pulse-duration: 2.4s;
+}
+variable-text[animation="pulse"] .vt-letter {
+    /* Shift the centre in from the font's limits so the full swing shows. */
+    --centre: clamp(
+        calc(var(--wght-min) + var(--pulse-range)),
+        var(--wght),
+        calc(var(--wght-max) - var(--pulse-range))
+    );
+    animation: vt-pulse var(--pulse-duration) ease-in-out infinite alternate;
+    animation-delay: calc(var(--rand) * var(--pulse-duration) * -2);
+}
+@keyframes vt-pulse {
+    from {
+        font-weight: calc(var(--centre) - var(--pulse-range));
+    }
+    to {
+        font-weight: calc(var(--centre) + var(--pulse-range));
+    }
+}
+@media (prefers-reduced-motion: reduce) {
+    .vt-letter {
+        animation: none !important;
+    }
+}
+
 /* Outbound project links. The accent comes from each project's --accent. */
 .project-link {
     display: inline-flex;
