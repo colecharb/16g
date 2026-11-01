@@ -45,11 +45,11 @@
             >
                 <!-- As big as the window allows: at most the page's width
                      (54.5cqw sets "16g" in Mono edge to edge), and short
-                     enough to leave 18rem of the screen for the rest of the
+                     enough to leave 23rem of the screen for the rest of the
                      hero. -->
                 <div
                     class="font-mono font-bold tracking-tight leading-none mb-6"
-                    style="font-size: min(54.5cqw, max(6rem, 100svh - 18rem))"
+                    style="font-size: min(54.5cqw, max(6rem, 100svh - 23rem))"
                 >
                     <variable-text animation="pulse">16g</variable-text>
                 </div>
@@ -80,9 +80,22 @@
                     Ontario: our own, and a few for people whose work we
                     believe in.
                 </p>
+                <a href="#work" class="mt-10 block w-fit" aria-label="See our work">
+                    <svg
+                        viewBox="0 0 24 24"
+                        class="stroke-pulse block size-8"
+                        style="--font-size: 32"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2.5"
+                        aria-hidden="true"
+                    >
+                        <path d="M12 3v17M5 13l7 7 7-7" />
+                    </svg>
+                </a>
             </header>
 
-            <main class="mt-20">
+            <main id="work" class="mt-20">
                 <!-- Apps ---------------------------------------------------->
                 <section aria-labelledby="apps-heading">
                     <h2
