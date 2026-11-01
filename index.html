@@ -54,20 +54,19 @@
                 >
                     <variable-text animation="pulse">16g</variable-text>
                 </div>
-                <!-- The name keeps its size from the 28rem column (it's 12em
-                     wide in Mono small caps), shrinking only to fit when
-                     "16g" is narrower, and is letter-spaced out to the width
-                     of "16g". The last letter's spacing hangs past the edge,
-                     so 24 gaps share the extra width. -->
+                <!-- The name keeps the size it had in small caps (2.324rem),
+                     shrinking only to fit when "16g" is narrower (it's 15.8em
+                     wide in Mono), and is letter-spaced out to the width of
+                     "16g". The last letter's spacing hangs past the edge, so
+                     24 gaps share the extra width. -->
                 <h1 class="mb-6 font-mono">
                     <span
                         class="block whitespace-nowrap font-semibold leading-none"
                         style="
-                            --name-size: min(2.324rem, 8.3cqw, var(--mark-size) * 1.821 / 12.008);
+                            --name-size: min(2.324rem, var(--mark-size) * 1.821 / 15.8);
                             font-size: var(--name-size);
-                            font-variant-caps: small-caps;
                             letter-spacing: calc(
-                                (var(--mark-size) * 1.821 - var(--name-size) * 12.008) / 24
+                                (var(--mark-size) * 1.821 - var(--name-size) * 15.8) / 24
                             );
                         "
                     >
