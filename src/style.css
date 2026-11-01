@@ -142,7 +142,7 @@ variable-text[animation="pulse"] .vt-letter {
     --fill: var(--paper);
     /* Only shapes the focus outline (the squircle is drawn behind): a round
        corner about as tight as the squircle's. */
-    border-radius: calc(var(--squircle-r) * 0.55);
+    border-radius: calc(var(--squircle-r) * 0.6);
     padding: calc(0.45rem + 1px) calc(0.95rem + 1px);
     font-weight: 500;
     line-height: 1.25;
