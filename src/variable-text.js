@@ -59,9 +59,12 @@ class VariableText extends HTMLElement {
 // anywhere, or a finger while it's pressed down. A press that turns into a
 // scroll lets go, so the page still scrolls normally.
 const RADIUS = 100; // px from a letter's centre where the pointer starts to push
-const PUSH = 0.12; // furthest a letter moves, in ems of its own font size
-const THIN = 300; // most weight a letter loses
-const EASE = 0.2; // share of the way to its target a letter moves each frame
+const PUSH = 0.3; // furthest a letter moves, in ems of its own font size
+const THIN = 500; // most weight a letter loses
+// Half-lives in ms: how long a letter takes to cover half the remaining way to
+// where it's headed. Letters dodge quickly and drift back slowly.
+const AWAY_MS = 50;
+const BACK_MS = 150;
 const WGHT_MIN = 200; // the font's weight range
 const WGHT_MAX = 800;
 
@@ -71,6 +74,7 @@ class Repel {
     letters = [];
     pointer = null; // viewport coordinates, or null when there's no pointer
     frame = 0;
+    last = 0; // time of the last frame, or 0 when the letters are at rest
 
     add(elements) {
         if (!this.letters.length) this.listen();
@@ -131,11 +135,15 @@ class Repel {
     }
 
     schedule() {
-        if (!this.frame) this.frame = requestAnimationFrame(() => this.tick());
+        if (!this.frame) this.frame = requestAnimationFrame((now) => this.tick(now));
     }
 
-    tick() {
+    tick(now) {
         this.frame = 0;
+        // Cap the step so a stalled tab doesn't make letters jump.
+        const dt = this.last ? Math.min(now - this.last, 100) : 1000 / 60;
+        const away = 1 - 0.5 ** (dt / AWAY_MS);
+        const back = 1 - 0.5 ** (dt / BACK_MS);
         let moving = false;
         for (const l of this.letters) {
             let tx = 0;
@@ -147,9 +155,9 @@ class Repel {
                 const d = Math.hypot(dx, dy);
                 if (d < RADIUS) {
                     const f = (1 - d / RADIUS) ** 2;
-                    const away = l.push * f / (d || 1);
-                    tx = dx * away;
-                    ty = dy * away;
+                    const step = l.push * f / (d || 1);
+                    tx = dx * step;
+                    ty = dy * step;
                     tthin = THIN * f;
                 }
             }
@@ -161,14 +169,16 @@ class Repel {
                 l.y = ty;
                 l.thin = tthin;
             } else {
-                l.x += (tx - l.x) * EASE;
-                l.y += (ty - l.y) * EASE;
-                l.thin += (tthin - l.thin) * EASE;
+                const ease = tthin < l.thin ? back : away;
+                l.x += (tx - l.x) * ease;
+                l.y += (ty - l.y) * ease;
+                l.thin += (tthin - l.thin) * ease;
                 moving = true;
             }
             l.el.style.transform = l.x || l.y ? `translate(${l.x}px, ${l.y}px)` : "";
             l.el.style.fontWeight = l.thin ? Math.max(WGHT_MIN, Math.round(l.weight - l.thin)) : "";
         }
+        this.last = moving ? now : 0;
         if (moving) this.schedule();
     }
 }
