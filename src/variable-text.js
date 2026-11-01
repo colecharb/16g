@@ -5,7 +5,8 @@
 //
 // Each letter gets:
 //   --wght  the element's own font weight, the target the animation moves around
-//   --rand  a random number from 0 to 1, for staggering the letters
+//   --rand       a random number from 0 to 1, for staggering the letters
+//   --rand-pace  another, for varying each letter's speed
 // and the element itself gets --font-size, its font size in px (unitless).
 class VariableText extends HTMLElement {
     connectedCallback() {
@@ -34,6 +35,7 @@ class VariableText extends HTMLElement {
                 letter.textContent = char;
                 letter.style.setProperty("--wght", weight);
                 letter.style.setProperty("--rand", Math.random().toFixed(3));
+                letter.style.setProperty("--rand-pace", Math.random().toFixed(3));
                 word.append(letter);
             }
             letters.append(word);

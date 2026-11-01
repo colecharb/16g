@@ -85,13 +85,15 @@ variable-text[repel] .vt-letter {
    of step with the others. Bigger text pulses slower: a swing takes
    --pulse-base-duration at --pulse-base-size px, scaled by the font size
    raised to --pulse-size-exponent. Below 1, big text slows down less than in
-   proportion (0.5 is the square root). */
+   proportion (0.5 is the square root). Each letter then runs up to
+   --pulse-jitter faster or slower, so they drift in and out of step. */
 variable-text[animation="pulse"],
 .stroke-pulse {
     --pulse-range: 200;
     --pulse-base-duration: 1.5s;
     --pulse-base-size: 72;
     --pulse-size-exponent: 0.5;
+    --pulse-jitter: 0.1;
     --pulse-duration: calc(
         var(--pulse-base-duration) *
             pow(
@@ -107,8 +109,12 @@ variable-text[animation="pulse"] .vt-letter {
         var(--wght),
         calc(var(--wght-max) - var(--pulse-range))
     );
-    animation: vt-pulse var(--pulse-duration) ease-in-out infinite alternate;
-    animation-delay: calc(var(--rand) * var(--pulse-duration) * -2);
+    --letter-duration: calc(
+        var(--pulse-duration) *
+            (1 + var(--pulse-jitter) * (2 * var(--rand-pace) - 1))
+    );
+    animation: vt-pulse var(--letter-duration) ease-in-out infinite alternate;
+    animation-delay: calc(var(--rand) * var(--letter-duration) * -2);
 }
 @keyframes vt-pulse {
     from {
