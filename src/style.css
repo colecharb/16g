@@ -76,7 +76,7 @@ variable-text {
    of step with the others. */
 variable-text[animation="pulse"] {
     --pulse-range: 150;
-    --pulse-duration: 1.92s;
+    --pulse-duration: 1.5s;
 }
 variable-text[animation="pulse"] .vt-letter {
     /* Shift the centre in from the font's limits so the full swing shows. */
