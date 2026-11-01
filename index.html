@@ -2,59 +2,412 @@
 <html lang="en">
     <head>
         <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
         <title>Sixteen Grams Corporation</title>
+        <meta
+            name="description"
+            content="Sixteen Grams designs, builds and maintains web and mobile software, including dial and the EvenKeel app."
+        />
+        <meta
+            name="theme-color"
+            content="#f3f0e6"
+            media="(prefers-color-scheme: light)"
+        />
+        <meta
+            name="theme-color"
+            content="#121211"
+            media="(prefers-color-scheme: dark)"
+        />
+        <link
+            rel="preload"
+            href="/fonts/AtkinsonHyperlegibleMono.woff2"
+            as="font"
+            type="font/woff2"
+            crossorigin
+        />
+        <link
+            rel="preload"
+            href="/fonts/AtkinsonHyperlegibleNext.woff2"
+            as="font"
+            type="font/woff2"
+            crossorigin
+        />
         <link rel="stylesheet" href="/src/style.css" />
+        <script type="module" src="/src/variable-text.js"></script>
     </head>
-    <body
-        class="h-screen overflow-hidden flex items-center justify-center bg-[#fafaf7] text-[#1a1a1a]"
-    >
-        <main class="@container w-full max-w-[28rem] p-6 text-left">
-            <div
-                class="font-bold tracking-tight leading-none mb-6"
-                style="font-size: 60cqw"
+    <body class="bg-paper text-ink antialiased">
+        <div class="@container mx-auto w-full max-w-5xl px-5 sm:px-8">
+            <!-- lvh is the viewport with the browser toolbars hidden. It
+                 doesn't change as they collapse on scroll, and it covers the
+                 page behind Safari's see-through toolbar. -->
+            <!-- --mark-size is as big as the window allows "16g" to be: at
+                 most the page's width (54.5cqw sets it edge to edge, 1.821em
+                 wide in Mono with tight tracking), and short enough to leave
+                 26rem of the screen for the rest of the hero. -->
+            <header
+                class="flex min-h-lvh flex-col justify-center py-14"
+                style="--mark-size: min(54.5cqw, max(6rem, 100svh - 26rem))"
             >
-                16g
-            </div>
-            <h1 class="mb-5">
-                <svg
-                    viewBox="0 0 100 8"
-                    preserveAspectRatio="xMidYMid meet"
-                    class="w-full block"
+                <div
+                    class="font-mono font-bold tracking-tight leading-none mb-6"
+                    style="font-size: var(--mark-size)"
                 >
-                    <text
-                        x="0"
-                        y="7"
-                        textLength="100"
-                        lengthAdjust="spacingAndGlyphs"
-                        font-size="8"
-                        font-weight="600"
-                        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-                        style="font-variant-caps: small-caps"
-                        fill="currentColor"
+                    <!-- The font's full range: 500 ± 300 is 200 to 800. -->
+                    <variable-text animation="pulse" style="--pulse-range: 300">16g</variable-text>
+                </div>
+                <!-- The name keeps its size from the 28rem column (it's 12em
+                     wide in Mono small caps), shrinking only to fit when
+                     "16g" is narrower, and is letter-spaced out to the width
+                     of "16g". The last letter's spacing hangs past the edge,
+                     so 24 gaps share the extra width. -->
+                <h1 class="mb-6 font-mono">
+                    <span
+                        class="block whitespace-nowrap font-semibold leading-none"
+                        style="
+                            --name-size: min(2.324rem, 8.3cqw, var(--mark-size) * 1.821 / 12.008);
+                            font-size: var(--name-size);
+                            font-variant-caps: small-caps;
+                            letter-spacing: calc(
+                                (var(--mark-size) * 1.821 - var(--name-size) * 12.008) / 24
+                            );
+                        "
                     >
-                        Sixteen Grams Corporation
-                    </text>
-                </svg>
-            </h1>
-            <p class="mb-5 leading-relaxed">
-                <a href="mailto:hello@16g.ca" class="underline">hello@16g.ca</a>
-            </p>
-            <p class="mb-4 leading-relaxed">
-                We are an Ontario-based corporation behind a handful of
-                projects, including:
-            </p>
-            <ul class="space-y-2 leading-relaxed">
-                <li>
-                    <strong class="font-semibold">Dial</strong>, a public coffee
-                    brew repository for iOS.
-                </li>
-                <li>
-                    <strong class="font-semibold"
-                        >The Earth to Clemi Field Guide</strong
-                    >, a seasonal companion for the journey home to yourself.
-                </li>
-            </ul>
-        </main>
+                        <variable-text repel>Sixteen Grams Corporation</variable-text>
+                    </span>
+                </h1>
+                <p class="mx-auto text-center leading-relaxed text-pretty">
+                    We design, build and maintain apps and websites:
+                    our own, and a few for people whose work we believe in.
+                </p>
+                <a href="#work" class="mx-auto mt-10 block w-fit" aria-label="See our work">
+                    <svg
+                        viewBox="0 0 16 24"
+                        class="block h-15 w-10"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.5"
+                        aria-hidden="true"
+                    >
+                        <path d="M8 3v17M1 13l7 7 7-7" />
+                    </svg>
+                </a>
+            </header>
+
+            <main id="work" class="mt-20">
+                <!-- Apps ---------------------------------------------------->
+                <section aria-labelledby="apps-heading">
+                    <h2
+                        id="apps-heading"
+                        class="label text-muted text-lg border-b border-line pb-2"
+                    >
+                        Apps
+                    </h2>
+
+                    <article
+                        id="dial"
+                        style="--accent: #d07940"
+                        class="grid gap-6 border-b border-line py-10 sm:grid-cols-[9rem_1fr] sm:gap-10 sm:py-14"
+                    >
+                        <div>
+                            <picture
+                                class="app-tile squircle-box block w-24 p-2.5 sm:w-36 sm:p-3.5"
+                                style="--edge: var(--line); --fill: var(--tile)"
+                            >
+                                <source
+                                    srcset="/work/dial-mark-dark.svg"
+                                    media="(prefers-color-scheme: dark)"
+                                />
+                                <img
+                                    src="/work/dial-mark-light.svg"
+                                    alt="The dial app icon"
+                                    width="500"
+                                    height="500"
+                                    class="block h-auto w-full"
+                                />
+                            </picture>
+                        </div>
+                        <div class="min-w-0">
+                            <p class="font-mono font-semibold text-muted flex items-center gap-2">
+                                <span class="accent-dot" aria-hidden="true"></span>
+                                Our app · iOS &amp; Android
+                            </p>
+                            <h3
+                                class="mt-2 text-6xl font-black leading-none tracking-[-0.03em] sm:text-7xl"
+                            >
+                                <variable-text repel>dial</variable-text>
+                            </h3>
+                            <p class="mt-3 font-mono text-xl text-muted sm:text-2xl">
+                                <variable-text repel>How others brew the same bag</variable-text>
+                            </p>
+                            <p class="mt-6 max-w-[40rem] leading-relaxed text-pretty">
+                                A shared brew journal for specialty coffee. Log
+                                the bags you buy and the cups you brew. See
+                                how everyone else brewed the same coffee. We
+                                design, build and run all of it: the iOS and
+                                Android apps, the backend, and the site.
+                            </p>
+                            <dl class="mt-8 grid gap-6 sm:grid-cols-3">
+                                <div>
+                                    <dt class="font-semibold">Your cellar</dt>
+                                    <dd class="mt-1 text-muted leading-relaxed">
+                                        Each bag with its roaster, roast date
+                                        and weight. dial tracks what's left as
+                                        you brew, plus any coffee in the freezer.
+                                    </dd>
+                                </div>
+                                <div>
+                                    <dt class="font-semibold">Log your brews</dt>
+                                    <dd class="mt-1 text-muted leading-relaxed">
+                                        Record the recipe, rate the cup. Brew it
+                                        again and dial starts from your last
+                                        recipe, so you change one thing at a
+                                        time.
+                                    </dd>
+                                </div>
+                                <div>
+                                    <dt class="font-semibold">
+                                        How others dialed it in
+                                    </dt>
+                                    <dd class="mt-1 text-muted leading-relaxed">
+                                        Every coffee has a page with everyone's
+                                        brews of it. Start from a recipe that
+                                        already worked.
+                                    </dd>
+                                </div>
+                            </dl>
+                            <p class="mt-8 text-sm text-muted">
+                                Expo &amp; React Native · Supabase · Next.js
+                            </p>
+                            <div class="mt-5 flex flex-wrap gap-3">
+                                <a
+                                    class="project-link project-link--primary"
+                                    href="https://apps.apple.com/ca/app/dial-brew-repository/id6761232622"
+                                    target="_blank"
+                                    rel="noopener"
+                                    >App Store<span aria-hidden="true">↗</span><span class="sr-only"> (opens in a new tab)</span></a
+                                >
+                                <a
+                                    class="project-link"
+                                    href="https://play.google.com/store/apps/details?id=com.colecharb.dial"
+                                    target="_blank"
+                                    rel="noopener"
+                                    >Google Play<span aria-hidden="true">↗</span><span class="sr-only"> (opens in a new tab)</span></a
+                                >
+                                <a
+                                    class="project-link"
+                                    href="https://dial.16g.ca/?ref=16g"
+                                    target="_blank"
+                                    rel="noopener"
+                                    >dial.16g.ca<span aria-hidden="true">↗</span><span class="sr-only"> (opens in a new tab)</span></a
+                                >
+                            </div>
+                        </div>
+                    </article>
+
+                    <article
+                        id="evenkeel"
+                        style="--accent: #344097"
+                        class="grid gap-6 py-10 sm:grid-cols-[9rem_1fr] sm:gap-10 sm:py-14"
+                    >
+                        <div>
+                            <img
+                                src="/work/evenkeel-icon.png"
+                                alt="The EvenKeel app icon"
+                                width="288"
+                                height="288"
+                                loading="lazy"
+                                decoding="async"
+                                class="app-tile squircle block h-auto w-24 sm:w-36"
+                            />
+                        </div>
+                        <div class="min-w-0">
+                            <p class="font-mono font-semibold text-muted flex items-center gap-2">
+                                <span class="accent-dot" aria-hidden="true"></span>
+                                Client app · iOS
+                            </p>
+                            <h3
+                                class="mt-2 text-4xl font-bold leading-none tracking-tight sm:text-5xl"
+                            >
+                                <variable-text repel>EvenKeel</variable-text>
+                            </h3>
+                            <p class="mt-3 font-mono text-xl text-muted sm:text-2xl">
+                                <variable-text repel>Custom insoles, ordered from a phone</variable-text>
+                            </p>
+                            <p class="mt-6 max-w-[40rem] leading-relaxed text-pretty">
+                                EvenKeel makes performance insoles from a photo
+                                of your foot and a video of your stride. We completely
+                                rebuilt the iOS app people order them
+                                through, from first photo to delivery.
+                            </p>
+                            <dl class="mt-8 grid gap-6 sm:grid-cols-3">
+                                <div>
+                                    <dt class="font-semibold">Guided capture</dt>
+                                    <dd class="mt-1 text-muted leading-relaxed">
+                                        Foot photos and gait video with live
+                                        level guides and instructions, so the
+                                        footage is right the first time.
+                                    </dd>
+                                </div>
+                                <div>
+                                    <dt class="font-semibold">
+                                        Material recommendation
+                                    </dt>
+                                    <dd class="mt-1 text-muted leading-relaxed">
+                                        Picks an insole material from each
+                                        person's activities, pain points and
+                                        profile.
+                                    </dd>
+                                </div>
+                                <div>
+                                    <dt class="font-semibold">
+                                        Checkout &amp; orders
+                                    </dt>
+                                    <dd class="mt-1 text-muted leading-relaxed">
+                                        Insoles for a whole household in one
+                                        cart, Stripe payments, and order
+                                        tracking through delivery.
+                                    </dd>
+                                </div>
+                            </dl>
+                            <p class="mt-8 text-sm text-muted">
+                                Expo &amp; React Native · Firebase · Stripe
+                            </p>
+                            <div class="mt-5 flex flex-wrap gap-3">
+                                <a
+                                    class="project-link project-link--primary"
+                                    href="https://apps.apple.com/app/id1500981971"
+                                    target="_blank"
+                                    rel="noopener"
+                                    >App Store<span aria-hidden="true">↗</span><span class="sr-only"> (opens in a new tab)</span></a
+                                >
+                            </div>
+                        </div>
+                    </article>
+                </section>
+
+                <!-- Websites ------------------------------------------------>
+                <section aria-labelledby="web-heading" class="mt-10 sm:mt-14">
+                    <h2
+                        id="web-heading"
+                        class="label text-muted text-lg border-b border-line pb-2"
+                    >
+                        Websites
+                    </h2>
+
+                    <div class="grid gap-12 py-10 sm:grid-cols-2 sm:gap-10 sm:py-14">
+                        <article
+                            id="stepping-stone"
+                            style="--accent: #a97155"
+                            class="min-w-0"
+                        >
+                            <div
+                                class="overflow-hidden rounded-xl border border-line bg-tile"
+                            >
+                                <img
+                                    src="/work/stepping-stone.webp"
+                                    alt="The Stepping Stone Doula Care homepage: a portrait of Chloe beside the headline “Nurture starts here”."
+                                    width="1600"
+                                    height="1000"
+                                    loading="lazy"
+                                    decoding="async"
+                                    class="block h-auto w-full"
+                                />
+                            </div>
+                            <p
+                                class="font-mono font-semibold text-muted mt-5 flex items-center gap-2"
+                            >
+                                <span class="accent-dot" aria-hidden="true"></span>
+                                Design &amp; build
+                            </p>
+                            <h3 class="mt-1 text-2xl font-bold tracking-tight">
+                                <variable-text repel>Stepping Stone Doula Care</variable-text>
+                            </h3>
+                            <p class="mt-3 leading-relaxed text-pretty">
+                                Chloe Charbonneau supports families through
+                                pregnancy, birth and postpartum in Tompkins
+                                County, NY. We made her whole site, from the
+                                design to automated email delivery of her
+                                product guide.
+                            </p>
+                            <div class="mt-5 flex flex-wrap gap-3">
+                                <a
+                                    class="project-link"
+                                    href="https://steppingstonedoula.com"
+                                    target="_blank"
+                                    rel="noopener"
+                                    >steppingstonedoula.com<span aria-hidden="true">↗</span><span class="sr-only"> (opens in a new tab)</span></a
+                                >
+                            </div>
+                        </article>
+
+                        <article
+                            id="subtext"
+                            style="--accent: #162228"
+                            class="min-w-0"
+                        >
+                            <div
+                                class="overflow-hidden rounded-xl border border-line bg-tile"
+                            >
+                                <img
+                                    src="/work/subtext.webp"
+                                    alt="The Subtext homepage: the new header over the hero, above a row of recent filter releases."
+                                    width="1491"
+                                    height="932"
+                                    loading="lazy"
+                                    decoding="async"
+                                    class="block h-auto w-full"
+                                />
+                            </div>
+                            <p
+                                class="font-mono font-semibold text-muted mt-5 flex items-center gap-2"
+                            >
+                                <span class="accent-dot" aria-hidden="true"></span>
+                                Brew guide &amp; navigation
+                            </p>
+                            <h3 class="mt-1 text-2xl font-bold tracking-tight">
+                                <variable-text repel>Subtext Coffee Roasters</variable-text>
+                            </h3>
+                            <p class="mt-3 leading-relaxed text-pretty">
+                                For the specialty roaster, we designed the brew
+                                guide, which suggests a starting grind for your
+                                brew method, grinder and coffee. We also remade
+                                the store's navigation: a header that sits clear
+                                over the hero and opens into a full-screen menu
+                                with search.
+                            </p>
+                            <div class="mt-5 flex flex-wrap gap-3">
+                                <a
+                                    class="project-link"
+                                    href="https://www.subtext.coffee/pages/brew-guide"
+                                    target="_blank"
+                                    rel="noopener"
+                                    >Brew guide<span aria-hidden="true">↗</span><span class="sr-only"> (opens in a new tab)</span></a
+                                >
+                                <a
+                                    class="project-link"
+                                    href="https://www.subtext.coffee"
+                                    target="_blank"
+                                    rel="noopener"
+                                    >subtext.coffee<span aria-hidden="true">↗</span><span class="sr-only"> (opens in a new tab)</span></a
+                                >
+                            </div>
+                        </article>
+                    </div>
+                </section>
+            </main>
+
+            <footer
+                class="mt-6 flex flex-col gap-2 border-t border-line py-10 text-sm text-muted sm:flex-row sm:justify-between"
+            >
+                <p>Sixteen Grams Corporation · Ontario, Canada</p>
+                <p>
+                    <a
+                        href="mailto:hello@16g.ca"
+                        class="underline underline-offset-2"
+                        >hello@16g.ca</a
+                    >
+                </p>
+            </footer>
+        </div>
     </body>
 </html>

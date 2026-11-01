@@ -1,1 +1,234 @@
 @import "tailwindcss";
+
+/* Atkinson Hyperlegible, self-hosted as variable fonts: Next for headings
+   and body text, Mono for subheadings and subtitles. */
+@font-face {
+    font-family: "Atkinson Hyperlegible Next";
+    src: url("/fonts/AtkinsonHyperlegibleNext.woff2") format("woff2");
+    font-weight: 200 800;
+    font-display: swap;
+}
+@font-face {
+    font-family: "Atkinson Hyperlegible Mono";
+    src: url("/fonts/AtkinsonHyperlegibleMono.woff2") format("woff2");
+    font-weight: 200 800;
+    font-display: swap;
+}
+
+@theme {
+    --font-sans: "Atkinson Hyperlegible Next", ui-sans-serif, system-ui,
+        sans-serif;
+    --font-mono: "Atkinson Hyperlegible Mono", ui-monospace, monospace;
+}
+
+/* Colour tokens. Utilities (bg-paper, text-ink, border-line, …) read the
+   variables, so dark mode only has to redefine them once below. */
+@theme inline {
+    --color-paper: var(--paper);
+    --color-ink: var(--ink);
+    --color-muted: var(--muted);
+    --color-line: var(--line);
+    --color-tile: var(--tile);
+}
+
+:root {
+    --paper: #f3f0e6;
+    --ink: #1a1a1a;
+    --muted: #5f5f5a;
+    --line: rgb(26 26 26 / 0.12);
+    --tile: #ffffff;
+    color-scheme: light dark;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --paper: #121211;
+        --ink: #ecece8;
+        --muted: #a3a39c;
+        --line: rgb(236 236 232 / 0.14);
+        --tile: #000000;
+    }
+}
+
+/* viewport-fit=cover lets the page run under the notch in landscape, so keep
+   the content clear of it. The insets are zero in portrait. */
+body {
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+}
+
+/* Small caps for section labels, echoing the masthead. */
+.label {
+    font-family: var(--font-mono);
+    font-variant-caps: small-caps;
+    letter-spacing: 0.08em;
+    font-weight: 600;
+}
+
+/* <variable-text> letter animations (see variable-text.js). --wght-min and
+   --wght-max are the font's weight range; each animation keeps inside it. */
+variable-text {
+    --wght-min: 200;
+    --wght-max: 800;
+}
+.vt-word {
+    white-space: nowrap;
+}
+/* Transforms only move boxes, so repelling letters need one each. Their width
+   is pinned at rest, so a thinning letter stays centred in its own space. */
+variable-text[repel] .vt-letter {
+    display: inline-block;
+    text-align: center;
+}
+
+/* pulse: each letter breathes --pulse-range above and below its weight, out
+   of step with the others. Bigger text pulses slower: a swing takes
+   --pulse-base-duration at --pulse-base-size px, scaled by the font size
+   raised to --pulse-size-exponent. Below 1, big text slows down less than in
+   proportion (0.5 is the square root). Each letter then runs up to
+   --pulse-jitter faster or slower, so they drift in and out of step. */
+variable-text[animation="pulse"] {
+    --pulse-range: 200;
+    --pulse-base-duration: 1.5s;
+    --pulse-base-size: 72;
+    --pulse-size-exponent: 0.5;
+    --pulse-jitter: 0.1;
+    --pulse-duration: calc(
+        var(--pulse-base-duration) *
+            pow(
+                var(--font-size, 72) / var(--pulse-base-size),
+                var(--pulse-size-exponent)
+            )
+    );
+}
+variable-text[animation="pulse"] .vt-letter {
+    /* Shift the centre in from the font's limits so the full swing shows. */
+    --centre: clamp(
+        calc(var(--wght-min) + var(--pulse-range)),
+        var(--wght),
+        calc(var(--wght-max) - var(--pulse-range))
+    );
+    --letter-duration: calc(
+        var(--pulse-duration) *
+            (1 + var(--pulse-jitter) * (2 * var(--rand-pace) - 1))
+    );
+    animation: vt-pulse var(--letter-duration) ease-in-out infinite alternate;
+    animation-delay: calc(var(--rand) * var(--letter-duration) * -2);
+}
+@keyframes vt-pulse {
+    from {
+        font-weight: calc(var(--centre) - var(--pulse-range));
+    }
+    to {
+        font-weight: calc(var(--centre) + var(--pulse-range));
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .vt-letter {
+        animation: none !important;
+    }
+}
+
+/* Outbound project links, shaped as squircle pills (see .squircle-box). The
+   accent comes from each project's --accent. */
+.project-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4em;
+    /* The corners are half the height: the line plus padding and edge. */
+    --squircle-r: calc((1.25em + 0.9rem) / 2 + 1px);
+    --edge: var(--line);
+    --fill: var(--paper);
+    /* Only shapes the focus outline (the squircle is drawn behind): a round
+       corner about as tight as the squircle's. */
+    border-radius: calc(var(--squircle-r) * 0.65);
+    padding: calc(0.45rem + 1px) calc(0.95rem + 1px);
+    font-weight: 500;
+    line-height: 1.25;
+}
+.project-link:hover {
+    --edge: var(--accent, var(--ink));
+}
+.project-link:focus-visible {
+    outline: 2px solid var(--accent, var(--ink));
+    outline-offset: 2px;
+}
+.project-link--primary {
+    --edge: var(--ink);
+    --fill: var(--ink);
+    color: var(--paper);
+}
+.project-link--primary:hover {
+    --edge: var(--ink);
+    --fill: color-mix(in srgb, var(--ink) 85%, var(--paper));
+}
+
+/* The coloured dot that carries each project's brand colour. */
+.accent-dot {
+    display: inline-block;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 999px;
+    background: var(--accent);
+    /* Keeps dark brand colours visible on the dark theme. */
+    box-shadow: 0 0 0 1px var(--line);
+}
+
+/* App icon tiles: one squircle edge to edge, like an iOS icon. */
+.app-tile {
+    --squircle-r: 50%;
+}
+
+/* Squircle corners: superellipses, like iOS's continuous corners, with radius
+   --squircle-r. CSS corner-shape draws these natively, but Safari doesn't
+   support it yet, so the shape is a mask instead: a squircle 2r across in
+   each corner, and two bars filling the rest.
+   .squircle masks the element itself, which also clips any border or focus
+   outline. .squircle-box (and .project-link) leaves its own box alone and
+   draws the shape behind its content: --edge as a 1px border, --fill inside
+   it. */
+:root {
+    --squircle: url("./squircle.svg");
+}
+.squircle,
+:is(.squircle-box, .project-link)::before,
+:is(.squircle-box, .project-link)::after {
+    --d: calc(2 * var(--r));
+    mask-image:
+        var(--squircle), var(--squircle), var(--squircle), var(--squircle),
+        linear-gradient(#000 0 0), linear-gradient(#000 0 0);
+    mask-size:
+        var(--d) var(--d),
+        var(--d) var(--d),
+        var(--d) var(--d),
+        var(--d) var(--d),
+        calc(100% - var(--d)) 100%,
+        100% calc(100% - var(--d));
+    mask-position: left top, right top, left bottom, right bottom, center, center;
+    mask-repeat: no-repeat;
+}
+.squircle,
+:is(.squircle-box, .project-link)::before {
+    --r: var(--squircle-r);
+}
+:is(.squircle-box, .project-link) {
+    position: relative;
+    isolation: isolate;
+}
+:is(.squircle-box, .project-link)::before,
+:is(.squircle-box, .project-link)::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    transition: background-color 150ms;
+}
+:is(.squircle-box, .project-link)::before {
+    inset: 0;
+    background: var(--edge, transparent);
+}
+:is(.squircle-box, .project-link)::after {
+    --r: calc(var(--squircle-r) - 1px);
+    inset: 1px;
+    background: var(--fill, transparent);
+}
