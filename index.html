@@ -36,20 +36,24 @@
         <script type="module" src="/src/variable-text.js"></script>
     </head>
     <body class="bg-paper text-ink antialiased">
-        <div class="mx-auto w-full max-w-5xl px-5 sm:px-8">
+        <div class="@container mx-auto w-full max-w-5xl px-5 sm:px-8">
             <!-- lvh is the viewport with the browser toolbars hidden. It
                  doesn't change as they collapse on scroll, and it covers the
                  page behind Safari's see-through toolbar. -->
             <header
-                class="@container flex min-h-lvh max-w-[28rem] flex-col justify-center py-14"
+                class="flex min-h-lvh flex-col justify-center py-14"
             >
+                <!-- As big as the window allows: at most the page's width
+                     (54.5cqw sets "16g" in Mono edge to edge), and short
+                     enough to leave 18rem of the screen for the rest of the
+                     hero. -->
                 <div
                     class="font-mono font-bold tracking-tight leading-none mb-6"
-                    style="font-size: 54cqw"
+                    style="font-size: min(54.5cqw, max(6rem, 100svh - 18rem))"
                 >
                     <variable-text animation="pulse">16g</variable-text>
                 </div>
-                <h1 class="mb-6 font-mono">
+                <h1 class="mb-6 max-w-[28rem] font-mono">
                     <svg
                         viewBox="0 0 100 8"
                         preserveAspectRatio="xMidYMid meet"
@@ -71,7 +75,7 @@
                         </text>
                     </svg>
                 </h1>
-                <p class="leading-relaxed text-pretty">
+                <p class="max-w-[28rem] leading-relaxed text-pretty">
                     We design, build and maintain apps and websites from
                     Ontario: our own, and a few for people whose work we
                     believe in.
