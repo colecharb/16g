@@ -1,6 +1,7 @@
-// <variable-text animation="…">: splits its text into letters so each one can
-// animate the variable font's weight on its own. The animations themselves
-// live in style.css, keyed on the `animation` attribute.
+// <variable-text animation="…" repel>: splits its text into letters so each
+// one can animate the variable font's weight on its own. The animations
+// themselves live in style.css, keyed on the `animation` attribute. With
+// `repel`, the letters also shy away from the pointer (see Repel below).
 //
 // Each letter gets:
 //   --wght  the element's own font weight, the target the animation moves around
@@ -21,19 +22,22 @@ class VariableText extends HTMLElement {
 
         const letters = document.createElement("span");
         letters.setAttribute("aria-hidden", "true");
-        for (const char of text) {
-            // Spaces stay as plain text so the title can still wrap between words.
-            if (char === " ") {
-                letters.append(" ");
-                continue;
+        text.split(" ").forEach((chars, i) => {
+            // Spaces stay as plain text between words, so the text wraps
+            // there and only there.
+            if (i > 0) letters.append(" ");
+            const word = document.createElement("span");
+            word.className = "vt-word";
+            for (const char of chars) {
+                const letter = document.createElement("span");
+                letter.className = "vt-letter";
+                letter.textContent = char;
+                letter.style.setProperty("--wght", weight);
+                letter.style.setProperty("--rand", Math.random().toFixed(3));
+                word.append(letter);
             }
-            const letter = document.createElement("span");
-            letter.className = "vt-letter";
-            letter.textContent = char;
-            letter.style.setProperty("--wght", weight);
-            letter.style.setProperty("--rand", Math.random().toFixed(3));
-            letters.append(letter);
-        }
+            letters.append(word);
+        });
 
         this.replaceChildren(label, letters);
 
@@ -46,7 +50,129 @@ class VariableText extends HTMLElement {
             );
         measure();
         if (this.parentElement) new ResizeObserver(measure).observe(this.parentElement);
+
+        if (this.hasAttribute("repel")) repel.add(this.querySelectorAll(".vt-letter"));
     }
 }
+
+// Letters near the pointer move away from it and lose weight: a mouse
+// anywhere, or a finger while it's pressed down. A press that turns into a
+// scroll lets go, so the page still scrolls normally.
+const RADIUS = 100; // px from a letter's centre where the pointer starts to push
+const PUSH = 0.12; // furthest a letter moves, in ems of its own font size
+const THIN = 300; // most weight a letter loses
+const EASE = 0.2; // share of the way to its target a letter moves each frame
+const WGHT_MIN = 200; // the font's weight range
+const WGHT_MAX = 800;
+
+const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)");
+
+class Repel {
+    letters = [];
+    pointer = null; // viewport coordinates, or null when there's no pointer
+    frame = 0;
+
+    add(elements) {
+        if (!this.letters.length) this.listen();
+        for (const el of elements) {
+            const weight = parseFloat(getComputedStyle(el).fontWeight);
+            this.letters.push({ el, weight: Math.min(weight, WGHT_MAX), x: 0, y: 0, thin: 0 });
+        }
+        this.measure();
+    }
+
+    listen() {
+        const options = { passive: true };
+        addEventListener("pointerdown", (e) => this.point(e), options);
+        // Touch pointers only move while pressed.
+        addEventListener("pointermove", (e) => this.point(e), options);
+        const lift = (e) => {
+            if (e.pointerType !== "mouse") this.release();
+        };
+        addEventListener("pointerup", lift, options);
+        addEventListener("pointercancel", lift, options);
+        document.documentElement.addEventListener("pointerleave", () => this.release());
+        addEventListener("scroll", () => this.schedule(), options);
+        // Letter positions only change with the layout.
+        new ResizeObserver(() => this.measure()).observe(document.documentElement);
+        document.fonts.ready.then(() => this.measure());
+    }
+
+    point(e) {
+        if (reduceMotion.matches) return;
+        this.pointer = { x: e.clientX, y: e.clientY };
+        this.schedule();
+    }
+
+    release() {
+        this.pointer = null;
+        this.schedule();
+    }
+
+    // Records where each letter sits at rest, in page coordinates, and fixes
+    // its width there so thinning it doesn't shift its neighbours.
+    measure() {
+        for (const l of this.letters) {
+            l.el.style.width = l.el.style.transform = l.el.style.fontWeight = "";
+            l.x = l.y = l.thin = 0;
+        }
+        const rests = this.letters.map((l) => ({
+            rect: l.el.getBoundingClientRect(),
+            size: parseFloat(getComputedStyle(l.el).fontSize),
+        }));
+        this.letters.forEach((l, i) => {
+            const { rect, size } = rests[i];
+            l.el.style.width = `${rect.width}px`;
+            l.cx = rect.left + rect.width / 2 + scrollX;
+            l.cy = rect.top + rect.height / 2 + scrollY;
+            l.push = PUSH * size;
+        });
+        this.schedule();
+    }
+
+    schedule() {
+        if (!this.frame) this.frame = requestAnimationFrame(() => this.tick());
+    }
+
+    tick() {
+        this.frame = 0;
+        let moving = false;
+        for (const l of this.letters) {
+            let tx = 0;
+            let ty = 0;
+            let tthin = 0;
+            if (this.pointer) {
+                const dx = l.cx - (this.pointer.x + scrollX);
+                const dy = l.cy - (this.pointer.y + scrollY);
+                const d = Math.hypot(dx, dy);
+                if (d < RADIUS) {
+                    const f = (1 - d / RADIUS) ** 2;
+                    const away = l.push * f / (d || 1);
+                    tx = dx * away;
+                    ty = dy * away;
+                    tthin = THIN * f;
+                }
+            }
+            const settled =
+                Math.abs(tx - l.x) < 0.05 && Math.abs(ty - l.y) < 0.05 && Math.abs(tthin - l.thin) < 1;
+            if (settled && tx === l.x && ty === l.y && tthin === l.thin) continue;
+            if (settled) {
+                l.x = tx;
+                l.y = ty;
+                l.thin = tthin;
+            } else {
+                l.x += (tx - l.x) * EASE;
+                l.y += (ty - l.y) * EASE;
+                l.thin += (tthin - l.thin) * EASE;
+                moving = true;
+            }
+            l.el.style.transform = l.x || l.y ? `translate(${l.x}px, ${l.y}px)` : "";
+            l.el.style.fontWeight = l.thin ? Math.max(WGHT_MIN, Math.round(l.weight - l.thin)) : "";
+        }
+        if (moving) this.schedule();
+    }
+}
+
+const repel = new Repel();
 
 customElements.define("variable-text", VariableText);

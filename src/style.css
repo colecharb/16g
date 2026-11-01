@@ -71,6 +71,15 @@ variable-text {
     --wght-min: 200;
     --wght-max: 800;
 }
+.vt-word {
+    white-space: nowrap;
+}
+/* Transforms only move boxes, so repelling letters need one each. Their width
+   is pinned at rest, so a thinning letter stays centred in its own space. */
+variable-text[repel] .vt-letter {
+    display: inline-block;
+    text-align: center;
+}
 
 /* pulse: each letter breathes --pulse-range above and below its weight, out
    of step with the others. Bigger text pulses slower: a swing takes
