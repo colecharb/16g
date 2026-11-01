@@ -58,9 +58,9 @@ class VariableText extends HTMLElement {
 // Letters near the pointer move away from it and lose weight: a mouse
 // anywhere, or a finger while it's pressed down. A press that turns into a
 // scroll lets go, so the page still scrolls normally.
-const RADIUS = 100; // px from a letter's centre where the pointer starts to push
-const PUSH = 0.3; // furthest a letter moves, in ems of its own font size
-const THIN = 500; // most weight a letter loses
+const RADIUS = 130; // px from a letter's centre where the pointer starts to push
+const PUSH = 0.45; // furthest a letter moves, in ems of its own font size
+const THIN = 600; // most weight a letter loses
 // Half-lives in ms: how long a letter takes to cover half the remaining way to
 // where it's headed. Letters dodge quickly and drift back slowly.
 const AWAY_MS = 50;
