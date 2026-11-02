@@ -180,6 +180,31 @@ variable-text[animation="pulse"] .vt-letter {
     --squircle-r: 50%;
 }
 
+/* App icons and site screenshots lean toward the pointer (see tilt.js). While
+   the pointer is over one, tilt.js animates the angles itself; when it
+   leaves, they ease back to flat here. They're registered as angles so the
+   transition runs on them, and tilt.js can read where it's got to. */
+@property --tilt-x {
+    syntax: "<angle>";
+    inherits: false;
+    initial-value: 0deg;
+}
+@property --tilt-y {
+    syntax: "<angle>";
+    inherits: false;
+    initial-value: 0deg;
+}
+.tilt {
+    transform: perspective(var(--tilt-perspective, 1000px))
+        rotateX(var(--tilt-x)) rotateY(var(--tilt-y));
+    transition:
+        --tilt-x 500ms cubic-bezier(0.2, 0.8, 0.2, 1),
+        --tilt-y 500ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.tilt.tilting {
+    transition: none;
+}
+
 /* Squircle corners: superellipses, like iOS's continuous corners, with radius
    --squircle-r. CSS corner-shape draws these natively, but Safari doesn't
    support it yet, so the shape is a mask instead: a squircle 2r across in
