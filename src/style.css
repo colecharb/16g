@@ -37,6 +37,7 @@
     --muted: #5f5f5a;
     --line: rgb(26 26 26 / 0.12);
     --tile: #ffffff;
+    --shadow: rgb(26 26 26 / 0.1);
     color-scheme: light dark;
 }
 
@@ -47,6 +48,7 @@
         --muted: #a3a39c;
         --line: rgb(243 240 230 / 0.14);
         --tile: #000000;
+        --shadow: rgb(0 0 0 / 0.5);
     }
 }
 
@@ -203,6 +205,15 @@ variable-text[animation="pulse"] .vt-letter {
 }
 .tilt.tilting {
     transition: none;
+}
+
+/* A soft shadow under app icons and site screenshots: a tight one at the
+   edge and a wider one further down. It's a filter so it follows the
+   rendered shape; put it on the element itself, or on a wrapper when the
+   element is masked (.squircle), since a mask would clip it. */
+.lift {
+    filter: drop-shadow(0 1px 1px var(--shadow))
+        drop-shadow(0 6px 10px var(--shadow));
 }
 
 /* Squircle corners: superellipses, like iOS's continuous corners, with radius
