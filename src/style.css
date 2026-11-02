@@ -182,10 +182,12 @@ variable-text[animation="pulse"] .vt-letter {
     --squircle-r: 50%;
 }
 
-/* App icons and site screenshots lean toward the pointer (see tilt.js). While
-   the pointer is over one, tilt.js animates the angles itself; when it
-   leaves, they ease back to flat here. They're registered as angles so the
-   transition runs on them, and tilt.js can read where it's got to. */
+/* App icons and site screenshots lean toward the pointer (see tilt.js), with
+   a shine on the side that's pressed down. While the pointer is over one,
+   tilt.js animates them itself; when it leaves, they ease back to flat here.
+   They're registered so the transition runs on them, and tilt.js can read
+   where it's got to. The shine's position and strength inherit, so the
+   .tilt-shine inside can read them. */
 @property --tilt-x {
     syntax: "<angle>";
     inherits: false;
@@ -196,15 +198,46 @@ variable-text[animation="pulse"] .vt-letter {
     inherits: false;
     initial-value: 0deg;
 }
+@property --shine-x {
+    syntax: "<percentage>";
+    inherits: true;
+    initial-value: 50%;
+}
+@property --shine-y {
+    syntax: "<percentage>";
+    inherits: true;
+    initial-value: 50%;
+}
+@property --shine {
+    syntax: "<number>";
+    inherits: true;
+    initial-value: 0;
+}
 .tilt {
+    --settle: 500ms cubic-bezier(0.2, 0.8, 0.2, 1);
+    position: relative;
     transform: perspective(var(--tilt-perspective, 1000px))
         rotateX(var(--tilt-x)) rotateY(var(--tilt-y));
     transition:
-        --tilt-x 500ms cubic-bezier(0.2, 0.8, 0.2, 1),
-        --tilt-y 500ms cubic-bezier(0.2, 0.8, 0.2, 1);
+        --tilt-x var(--settle),
+        --tilt-y var(--settle),
+        --shine-x var(--settle),
+        --shine-y var(--settle),
+        --shine var(--settle);
 }
 .tilt.tilting {
     transition: none;
+}
+.tilt-shine {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(
+        farthest-corner at var(--shine-x) var(--shine-y),
+        rgb(255 255 255 / 0.2),
+        transparent 70%
+    );
+    opacity: var(--shine);
 }
 
 /* A soft shadow under app icons and site screenshots: a tight one at the
@@ -223,11 +256,12 @@ variable-text[animation="pulse"] .vt-letter {
    .squircle masks the element itself, which also clips any border or focus
    outline. .squircle-box (and .project-link) leaves its own box alone and
    draws the shape behind its content: --edge as a 1px border, --fill inside
-   it. */
+   it. A .tilt-shine inside one is masked to the shape too. */
 :root {
     --squircle: url("./squircle.svg");
 }
 .squircle,
+.squircle-box > .tilt-shine,
 :is(.squircle-box, .project-link)::before,
 :is(.squircle-box, .project-link)::after {
     --d: calc(2 * var(--r));
@@ -245,6 +279,7 @@ variable-text[animation="pulse"] .vt-letter {
     mask-repeat: no-repeat;
 }
 .squircle,
+.squircle-box > .tilt-shine,
 :is(.squircle-box, .project-link)::before {
     --r: var(--squircle-r);
 }

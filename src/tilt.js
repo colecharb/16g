@@ -1,12 +1,16 @@
 // .tilt: the element leans in 3D toward the pointer, as if it were a card
-// pressed down where the pointer is, and settles back flat when it leaves.
+// pressed down where the pointer is, and settles back flat when it leaves. A
+// shine sits on the side that's pressed down, brighter the further it leans.
 // Only for a mouse or pen: a finger on the screen is scrolling the page.
 //
 // Each element gets:
 //   --tilt-x, --tilt-y  its rotation about each axis, in degrees
 //   --tilt-perspective  a viewing distance in proportion to its size, so big
 //                       and small elements lean by the same amount
-// The transform, and the easing back to flat, live in style.css.
+//   --shine-x, --shine-y  where the shine is centred, as percentages
+//   --shine               how strong it is, from 0 to 1
+// and a .tilt-shine child to draw the shine. The transform, the shine, and
+// the easing back to flat live in style.css.
 const MAX_TILT = 10; // degrees, with the pointer at an edge
 const PERSPECTIVE = 3; // viewing distance, in multiples of the element's width
 // While the pointer is over it, the rotation follows a critically damped
@@ -29,6 +33,10 @@ class Tilt {
 
     constructor(el) {
         this.el = el;
+        const shine = document.createElement("span");
+        shine.className = "tilt-shine";
+        shine.setAttribute("aria-hidden", "true");
+        el.append(shine);
         el.addEventListener("pointerenter", (e) => this.enter(e));
         el.addEventListener("pointermove", (e) => this.move(e));
         el.addEventListener("pointerleave", () => this.leave());
@@ -72,6 +80,14 @@ class Tilt {
         this.y += this.vy * dt;
         this.el.style.setProperty("--tilt-x", `${this.x.toFixed(2)}deg`);
         this.el.style.setProperty("--tilt-y", `${this.y.toFixed(2)}deg`);
+        // The shine follows the lean rather than the pointer, so it eases in
+        // and catches up along with it.
+        const sx = 50 + (this.y / MAX_TILT) * 50;
+        const sy = 50 - (this.x / MAX_TILT) * 50;
+        const strength = Math.min(1, Math.hypot(this.x, this.y) / MAX_TILT);
+        this.el.style.setProperty("--shine-x", `${sx.toFixed(1)}%`);
+        this.el.style.setProperty("--shine-y", `${sy.toFixed(1)}%`);
+        this.el.style.setProperty("--shine", strength.toFixed(3));
 
         const settled =
             Math.abs(this.targetX - this.x) + Math.abs(this.targetY - this.y) < 0.01 &&
@@ -84,8 +100,9 @@ class Tilt {
         this.frame = null;
         // Hands back to the CSS transition, which eases it from here to flat.
         this.el.classList.remove("tilting");
-        this.el.style.removeProperty("--tilt-x");
-        this.el.style.removeProperty("--tilt-y");
+        for (const name of ["--tilt-x", "--tilt-y", "--shine-x", "--shine-y", "--shine"]) {
+            this.el.style.removeProperty(name);
+        }
     }
 }
 
